@@ -1,0 +1,7 @@
+github.com/line/line-bot-sdk-go v1.3.0 h1:bYwGgbUrYbvTEJ8oOT18rmkclJOCB1RtLwYVZ97ello=
+github.com/line/line-bot-sdk-go v7.8.0+incompatible h1:Uf9/OxV0zCVfqyvwZPH8CrdiHXXmMRa/L91G3btQblQ=
+github.com/line/line-bot-sdk-go v7.8.0+incompatible/go.mod h1:0RjLjJEAU/3GIcHkC3av6O4jInAbt25nnZVmOFUgDBg=
+github.com/markcheno/go-talib v0.0.0-20190307022042-cd53a9264d70 h1:+iG37/Aw61Oc+ZJ4DSxQF2+K0e4ZiMidI7ytWuW4/cI=
+github.com/markcheno/go-talib v0.0.0-20190307022042-cd53a9264d70/go.mod h1:xsYvOKWtDWoDV0kdN3U8tYZ4lVrhjqf64cJRzR4ScTI=
+gopkg.in/go-ini/ini.v1 v1.66.2 h1:eN0O/0wTF+QUb6i7I1sMQZSVi2GRCfDmBSIioXgl2vQ=
+gopkg.in/go-ini/ini.v1 v1.66.2/go.mod h1:M74/hG4RTwbkZyTEZ9iQwM4v6dFD4u6QBjoqT/pM8Kg=
