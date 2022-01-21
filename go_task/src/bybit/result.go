@@ -55,6 +55,30 @@ type OHLC struct {
 	Turnover float64 `json:"turnover,string"`
 }
 
+type LinearOHLC struct {
+	ID       int64   `json:"id"`
+	Period   string  `json:"period"`
+	Start_at int64   `json:"start_at"`
+	Symbol   string  `json:"symbol"`
+	Interval string  `json:"interval"`
+	OpenTime int64   `json:"open_time"`
+	Open     float64 `json:"open"`
+	High     float64 `json:"high"`
+	Low      float64 `json:"low"`
+	Close    float64 `json:"close"`
+	Volume   float64 `json:"volume"`
+	Turnover float64 `json:"turnover"`
+}
+
+type GetLinearKlineResult struct {
+	RetCode int          `json:"ret_code"`
+	RetMsg  string       `json:"ret_msg"`
+	ExtCode string       `json:"ext_code"`
+	ExtInfo string       `json:"ext_info"`
+	Result  []LinearOHLC `json:"result"`
+	TimeNow string       `json:"time_now"`
+}
+
 type GetKlineResult struct {
 	RetCode int    `json:"ret_code"`
 	RetMsg  string `json:"ret_msg"`
@@ -78,12 +102,12 @@ type Ticker struct {
 	Price1HPcnt          float64   `json:"price_1h_pcnt,string"`
 	MarkPrice            float64   `json:"mark_price,string"`
 	IndexPrice           float64   `json:"index_price,string"`
-	OpenInterest         int       `json:"open_interest"`
+	OpenInterest         float64   `json:"open_interest"`
 	OpenValue            float64   `json:"open_value,string"`
 	TotalTurnover        float64   `json:"total_turnover,string"`
 	Turnover24H          float64   `json:"turnover_24h,string"`
-	TotalVolume          int64     `json:"total_volume"`
-	Volume24H            int64     `json:"volume_24h"`
+	TotalVolume          float64   `json:"total_volume"`
+	Volume24H            float64   `json:"volume_24h"`
 	FundingRate          float64   `json:"funding_rate,string"`
 	PredictedFundingRate float64   `json:"predicted_funding_rate,string"`
 	NextFundingTime      time.Time `json:"next_funding_time"`
