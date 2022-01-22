@@ -222,8 +222,6 @@ func (b *Bybit) RsiSignalTask(symbols []string, signal chan<- Signal) {
 				CoinPair: symbol,
 				Sign:     1,
 			}
-		} else {
-			return
 		}
 	}
 }
