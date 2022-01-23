@@ -22,8 +22,13 @@ RUN apt-get update && apt-get upgrade -y && \
     rm -rf /var/lib/apt/lists/*
 
 # TA-Libでpipを使用するため先にpipのアップグレードとpythonパッケージのインストール
-RUN pip3 install --upgrade pip
-RUN pip3 install matplotlib numpy pandas scipy sklearn
+RUN pip3 install --upgrade pip && pip3 install \
+    matplotlib \
+    numpy \
+    pandas \
+    requests \
+    scipy \
+    sklearn
 
 # TA-Libのソースファイルをダウンロード(Ver.0.4.0)して展開後にmakeしてインストールする
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
