@@ -16,20 +16,34 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-setuptools \
     build-essential python \
     python3-dev \
-    python3-pip && \
+    python3-pip \
+    wget && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
-# 機械学習用のライブラリ・モジュールをインストールする
-RUN pip3 install --upgrade pip
-RUN pip3 install numpy pandas scipy sklearn matplotlib psycopg2
+# TA-Libでpipを使用するため先にpipのアップグレードとpythonパッケージのインストール
+RUN pip3 install --upgrade pip && pip3 install \
+    matplotlib \
+    numpy \
+    pandas \
+    requests \
+    scipy \
+    sklearn
+
+# TA-Libのソースファイルをダウンロード(Ver.0.4.0)して展開後にmakeしてインストールする
+RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
+    tar xvzf ta-lib-0.4.0-src.tar.gz && \
+    cd ta-lib && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install && \
+    bash -c "echo "/usr/local/lib64" >> /etc/ld.so.conf" && \
+    /sbin/ldconfig && \
+    /usr/local/bin/pip3 install ta-lib
 
 # Workディレクトリの作成
-RUN mkdir -p /machine-learning/proc /machine-learning/log
-WORKDIR /machine-learning/proc
+RUN mkdir -p /app/scripts /app/log
+WORKDIR /app
 
-# PostgreSQL接続用の環境変数設定
-ENV DB_URL=postgresql://postgres:3d93792ce41f165941d34c70f7175ece@192.168.0.117:5432/streliztia_db
-
-# コンテナの実行時に実行されるコマンドの指定(機械学習エンジンの起動)
-CMD ["python3", "main/src/run.py"]
+# コンテナの実行時に実行されるコマンドの指定
+# CMD ["python3", "app/launch.py"]

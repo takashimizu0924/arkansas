@@ -12,5 +12,5 @@ func main() {
 
 	client := bybit.NewBybit(config.Config.ApiKey, config.Config.ApiSecret, true)
 
-	client.CryptTaskV1("BTCUSD")
+	client.CryptTaskV1()
 }
