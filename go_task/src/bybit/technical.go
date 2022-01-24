@@ -16,4 +16,19 @@ func BBand(closes []float64, n int, k float64) (up, mid, down []float64) {
 	return bbandUP, bbandMID, bbandDOWN
 }
 
+func Macd(close []float64, f, s, sign int) (macd, macdSignal, macdHist []float64) {
+	if s <= len(close) {
+		m, ms, mh := talib.Macd(close, f, s, sign)
+		macd = m
+		macdSignal = ms
+		macdHist = mh
+	}
+	return macd, macdSignal, macdHist
+}
 
+func RSI(close []float64, period int) (rsi []float64) {
+	if period <= len(close) {
+		rsi = talib.Rsi(close, period)
+	}
+	return
+}

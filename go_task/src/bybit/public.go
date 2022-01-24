@@ -46,6 +46,22 @@ func (b *Bybit) GetOrderBook(symbol string) (result OrderBook, err error) {
 	result.Time = time.Unix(0, int64(timeNow*1e9))
 	return
 }
+func (b *Bybit) GetLinearKline(symbol, interval string, from int64, limit int) (result []LinearOHLC, err error) {
+	var ret GetLinearKlineResult
+	params := map[string]interface{}{}
+	params["symbol"] = symbol
+	params["interval"] = interval
+	params["from"] = from
+	if limit > 0 {
+		params["limit"] = limit
+	}
+	_, err = b.PublicRequest(http.MethodGet, "/public/linear/kline", params, &ret)
+	if err != nil {
+		log.Println("action=GetKline ==>", err.Error())
+	}
+	result = ret.Result
+	return
+}
 
 func (b *Bybit) GetKline(symbol, interval string, from int64, limit int) (result []OHLC, err error) {
 	var ret GetKlineResult

@@ -1,6 +1,7 @@
 package line
 
 import (
+	"arkansas/bybit"
 	"arkansas/config"
 	"log"
 	"strconv"
@@ -38,4 +39,30 @@ func PostTextMessage(date time.Time, profit float64, bot *linebot.Client) error 
 func timeToString(t time.Time) string {
 	str := t.Format(timeLayout)
 	return str
+}
+
+func PushCryptTrend(signals []bybit.Signal, bot *linebot.Client) error {
+	var sb strings.Builder
+	sb.WriteString("【 シグナルでました 】\n")
+	for i := 0; i < len(signals); i++ {
+		sb.WriteString(" [ ")
+		sb.WriteString(signals[i].CoinPair)
+		sb.WriteString(" ] :")
+		if signals[i].Sign == 0 {
+			sb.WriteString("下降予想です\n")
+			sb.WriteString("現在価格↓\n")
+			sb.WriteString(strconv.FormatFloat(signals[i].Price, 'f', 2, 64))
+		}
+		if signals[i].Sign == 1 {
+			sb.WriteString("上昇予想です\n")
+			sb.WriteString("現在価格↓\n")
+			sb.WriteString(strconv.FormatFloat(signals[i].Price, 'f', 2, 64))
+		}
+	}
+	message := linebot.NewTextMessage(sb.String())
+	if _, err := bot.BroadcastMessage(message).Do(); err != nil {
+		log.Println("action=PostTextMessage err=:", err)
+		return err
+	}
+	return nil
 }
