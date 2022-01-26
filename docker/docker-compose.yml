@@ -2,7 +2,7 @@ version: "3"
 
 services:
   golang_server:
-      build: ./go_task
+      build: ../go_task
       container_name : go_task
       restart: always
       volumes:
@@ -14,12 +14,12 @@ services:
         - "3033:3033"
       tty: true
   python_server:
-      build: ./python_task
-      container_name: python_task
+      build: ../arkansas
+      container_name: arkansas
       restart: always
       volumes:
-        - ./python_task/scripts:/app/scripts
-        - ./python_task/scripts:/app/log
+        - ../arkansas/app:/arkansas/app
+        - ../arkansas/log:/arkansas/log
       environment:
         TZ: "Asia/Tokyo"
       ports:
