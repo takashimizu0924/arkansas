@@ -83,7 +83,9 @@ func (b *Bybit) CryptTaskV1() (upSignals, downSignals []Signal) {
 			}
 		}
 	}
+	lastSignal := b.StrategyV1(upSignals)
+	lastSignal2 := b.StrategyV1(downSignals)
 
 	log.Println("タスク終了")
-	return upSignals, downSignals
+	return lastSignal, lastSignal2
 }

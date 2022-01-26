@@ -165,7 +165,7 @@ func DuplicateCheckTask(signals []Signal) []Signal {
 			//result = append(result, signals[i])
 		} else {
 			result = append(result, signals[i])
-			log.Println(encountered[signals[i].CoinPair])
+			log.Println(signals[i].CoinPair)
 		}
 	}
 	return result

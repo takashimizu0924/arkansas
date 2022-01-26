@@ -18,7 +18,7 @@ func main() {
 		log.Println(err)
 	}
 	// 1/24 00:48時点のこのコードでは処理時間が約１分２０秒かかっている
-	for range time.Tick(30 * time.Minute) {
+	for range time.Tick(5 * time.Minute) {
 		upSignal, downSignal := client.CryptTaskV1()
 		if len(upSignal) > 0 {
 			line.PushCryptTrend(upSignal, lineBot)
