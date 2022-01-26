@@ -23,12 +23,9 @@ RUN apt-get update && apt-get upgrade -y && \
 
 # TA-Libでpipを使用するため先にpipのアップグレードとpythonパッケージのインストール
 RUN pip3 install --upgrade pip && pip3 install \
-    matplotlib \
-    numpy \
+    ccxt \
     pandas \
-    requests \
-    scipy \
-    sklearn
+    requests
 
 # TA-Libのソースファイルをダウンロード(Ver.0.4.0)して展開後にmakeしてインストールする
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
@@ -42,8 +39,8 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
     /usr/local/bin/pip3 install ta-lib
 
 # Workディレクトリの作成
-RUN mkdir -p /app/scripts /app/log
-WORKDIR /app
+RUN mkdir -p /arkansas/app /arkansas/log
+WORKDIR /arkansas/
 
 # コンテナの実行時に実行されるコマンドの指定
-# CMD ["python3", "app/launch.py"]
+# CMD ["python3", "-B", "app"]
