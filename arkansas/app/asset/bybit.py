@@ -19,6 +19,15 @@ class Bybit:
         self.bybit_api_inf["urls"]      = {"api":urls}
         self.bybit_api                  = ccxt.bybit(self.bybit_api_inf)
         
-    def get_position(self):
-        pass
-        
+    def fetch_ticker(self,symbol):
+        """ティッカー情報を取得する
+
+        Args:
+            symbol (str): 取得するティッカーシンボルの指定
+        Returns:
+            ticker (object) / None
+        """
+        if not symbol:
+            return None
+        ticker = self.bybit_api.fetch_ticker(symbol)
+        return ticker
