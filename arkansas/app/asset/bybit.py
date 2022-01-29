@@ -25,9 +25,9 @@ class Bybit:
         Args:
             symbol (str): 取得するティッカーシンボルの指定
         Returns:
-            ticker (object) / None
+            str: ticker情報 / None
         """
-        if not symbol:
-            return None
-        ticker = self.bybit_api.fetch_ticker(symbol)
+        ticker = None
+        if not symbol == "":
+            ticker = self.bybit_api.fetch_ticker(symbol)
         return ticker
