@@ -127,6 +127,9 @@ class BybitSymbol:
                                     "SCU/USDT",
                                     ]
                                 }
+        def get_symbol_max_id(self, symbol_type):
+            return len(self.__symbol_table[symbol_type])
+            
         def get_name_from_id(self, symbol_type, symbol_id):
             """ID番号から通貨種別名を取得する
 
@@ -146,26 +149,22 @@ class BybitSymbol:
 class Bybit:
     """Bybitクラス
     """
-    def __init__(self):
+    def __init__(self, apikey="", secret="", urls=""):
         """コンストラクタ
-            NOTE: bybitAPIを使用する事前準備
+           NOTE: bybitAPIを使用する事前準備
+        Args:
+            apikey (str, optional): apiキー文字列, Defaults to "".
+            secret (str, optional): apiシークレットキー文字列, Defaults to "".
+            urls (str, optional): apiのURL文字列, Defaults to "".
         """
-        self.bybit_api = ccxt.bybit()
-
-    # def __init__(self, apikey, secret, urls):
-    #     """コンストラクタ
-
-    #     Args:
-    #         apikey (str): apiキー文字列
-    #         secret (str): apiシークレットキー文字列
-    #         urls (str): apiのURL文字列
-    #     """
-    #     self.bybit_api_inf              = {}
-    #     self.bybit_api_inf["apiKey"]    = apikey
-    #     self.bybit_api_inf["secret"]    = secret
-    #     self.bybit_api_inf["urls"]      = {"api":urls}  # 不要情報？
-    #     # self.bybit_api                  = ccxt.bybit(self.bybit_api_inf)
-    #     self.bybit_api                  = ccxt.bybit()
+        if not apikey == "" and not secret == "":
+            self.bybit_api_inf              = {}
+            self.bybit_api_inf["apiKey"]    = apikey
+            self.bybit_api_inf["secret"]    = secret
+            self.bybit_api_inf["urls"]      = {"api":urls}  # 不要情報？
+            self.bybit_api                  = ccxt.bybit(self.bybit_api_inf)
+        else:
+            self.bybit_api                  = ccxt.bybit()
         
     def fetch_ticker(self,symbol):
         """ティッカー情報を取得する
