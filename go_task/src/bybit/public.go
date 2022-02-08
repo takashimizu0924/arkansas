@@ -3,9 +3,12 @@ package bybit
 import (
 	"log"
 	"net/http"
+	"net/url"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 func (b *Bybit) GetOrderBook(symbol string) (result OrderBook, err error) {
@@ -46,6 +49,22 @@ func (b *Bybit) GetOrderBook(symbol string) (result OrderBook, err error) {
 	result.Time = time.Unix(0, int64(timeNow*1e9))
 	return
 }
+func (b *Bybit) GetLinearKline(symbol, interval string, from int64, limit int) (result []LinearOHLC, err error) {
+	var ret GetLinearKlineResult
+	params := map[string]interface{}{}
+	params["symbol"] = symbol
+	params["interval"] = interval
+	params["from"] = from
+	if limit > 0 {
+		params["limit"] = limit
+	}
+	_, err = b.PublicRequest(http.MethodGet, "/public/linear/kline", params, &ret)
+	if err != nil {
+		log.Println("action=GetKline ==>", err.Error())
+	}
+	result = ret.Result
+	return
+}
 
 func (b *Bybit) GetKline(symbol, interval string, from int64, limit int) (result []OHLC, err error) {
 	var ret GetKlineResult
@@ -56,6 +75,7 @@ func (b *Bybit) GetKline(symbol, interval string, from int64, limit int) (result
 	if limit > 0 {
 		params["limit"] = limit
 	}
+	log.Println(params)
 	_, err = b.PublicRequest(http.MethodGet, "/v2/public/kline/list", params, &ret)
 	if err != nil {
 		log.Println("action=GetKline ==>", err.Error())
@@ -99,8 +119,30 @@ func (b *Bybit) GetTradingRecords(symbol string, from int64, limit int) (result 
 func (b *Bybit) GetSymbols() (result []SymbolInfo, err error) {
 	var ret GetSymbolsResult
 	params := map[string]interface{}{}
-	_, err = b.PublicRequest(http.MethodGet, "/v2/public/symbols", params, &ret)
 
+	_, err = b.PublicRequest(http.MethodGet, "/v2/public/symbols", params, &ret)
+	log.Println(err.Error())
 	result = ret.Result
 	return
+}
+
+func (b *Bybit) RealtimeGet() {
+	u := url.URL{Scheme: "wss", Host: "stream.bybit.com", Path: "/realtime_public"}
+	log.Printf("Connecting to....%s", u.String())
+
+	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	if err != nil {
+		log.Println(err)
+	}
+	defer c.Close()
+	param := `{"op":"subscribe","args":["candle.5.BTCUSDT"]}`
+	c.WriteMessage(websocket.TextMessage, []byte(param))
+
+	for {
+		_, messsage, err := c.ReadMessage()
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(string(messsage))
+	}
 }
