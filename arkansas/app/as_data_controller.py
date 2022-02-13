@@ -1,27 +1,75 @@
 #!/usr/bin/env python3
 
-from arkansas.app.config import Parser
-from arkansas.app.asset.bybit import Bybit, BybitSymbol
+from as_def_data import As_MarketData
+from config.config import Parser
+from asset.bybit import Bybit
 
 class AS_TradeMarket:
     """ 市場クラス
     """
-    def __init__(self, auto_mode=False, test_mode=False):
-        if auto_mode:
-            self.config_file_path = "/config/config.ini"
-            self.config_parser = Parser(self.config_file_path)
-            self.config_bybit_api_key = self.config_parser.get_sectionsValue_fromKey("bybit", "api_key")
-            self.config_bybit_api_secret = self.config_parser.get_sectionsValue_fromKey("bybit", "api_secret")
-            self.config_bybit_urls = ""
-            if test_mode:
-                self.config_bybit_urls = self.config_parser.get_sectionsValue_fromKey("bybit", "test_base_url")
-            else:
-                self.config_bybit_urls = self.config_parser.get_sectionsValue_fromKey("bybit", "base_url")
-            self.bybit = Bybit(self.config_bybit_api_key, self.config_bybit_api_secret, self.config_bybit_urls)
+    def __init__(self, auto_mode=False, test_mode=False, market_type="bybit"):
+        """コンストラクタ
+
+        Args:
+            auto_mode (bool, optional): 自動取引モード設定 Defaults to False.
+            test_mode (bool, optional): テストモード設定 Defaults to False.
+            market_type (str, optional): 市場タイプ名 Defaults to "bybit".
+        """
+        self.is_auto = auto_mode
+        self.is_test = test_mode
+        self.is_reload = False
+        self.market = None
+        self.market_data = As_MarketData()
+        self.config_parser = None
+        self.api_key = ""
+        self.api_secret = ""
+        if self.check_market_type(market_type):
+            self.market_type = market_type
         else:
-            self.bybit = Bybit()
+            self.market_type = "bybit"
+        self.__preproc()
+
+    def __preproc(self):
+        api_key = ""
+        api_secret = ""
+        url = ""
+        # 自動取引モード設定
+        if self.get_auto_mode():
+            config_file_path = "/config/config.ini"
+            config_parser = Parser(config_file_path)
+            api_key = config_parser.get_sectionsValue_fromKey(self.market_type, "api_key")
+            api_secret = config_parser.get_sectionsValue_fromKey(self.market_type, "api_secret")
+            # テストモード設定
+            if self.get_test_mode():
+                url = config_parser.get_sectionsValue_fromKey("bybit", "test_base_url")
+        # 市場別処理
+        if self.market_type == "bybit":
+            self.market = Bybit(api_key, api_secret, url)
+        else:
+            raise Exception(f"Market type error. market_type:{self.market_type}")
+    
+    def __reload(self):
+        if self.is_reload:
+            self.__preproc()
+
+    def check_market_type(self, market_type):
+        return self.market_data.is_exist_into_table(market_type)
+
+    def set_auto_mode(self, auto_mode):
+        self.is_auto = auto_mode
+
+    def set_test_mode(self, test_mode):
+        self.is_test = test_mode
+    
+    def get_auto_mode(self):
+        return self.is_auto
+    
+    def get_test_mode(self):
+        return self.is_test
+    
+    def fetch_ticker(self, symbol):
+        return self.market.fetch_ticker(symbol)
             
-    def get_ticker(self, symbol_type,symbol_id):
-        symbol = BybitSymbol.get_name_from_id(symbol_type, symbol_id)
-        return self.bybit.fetch_ticker(symbol)
-        
+    # def get_ticker(self, symbol_type,symbol_id):
+    #     symbol = BybitSymbol.get_name_from_id(symbol_type, symbol_id)
+    #     return self.bybit.fetch_ticker(symbol)        

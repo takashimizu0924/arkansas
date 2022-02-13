@@ -4,17 +4,17 @@ import configparser
 class Parser:
     """パーサークラス
     """
-    def __init__(self, config_file_path):
-        """コンストラクタ
+    def __init__(self, config_file_path="/config/config.ini"):
+        """ コンストラクタ
 
         Args:
-            config_file_path (str): configファイルへのパス
+            config_file_path (str, optional): configファイルへのパス Defaults to "/config/config.ini".
         """
         self.config = configparser.ConfigParser()
         self.config_file_path = config_file_path
-        self._pre_read_config()
+        self._preload_config()
         
-    def _pre_read_config(self):
+    def _preload_config(self):
         """ 事前にconfigファイルを読み込む
         """
         if self.config_file_path == "" or not self.config_file_path in ".ini":
@@ -36,5 +36,3 @@ class Parser:
         if  section_name in sections_info:
             sections_value = self.config[section_name][key]
         return sections_value
-        
-
